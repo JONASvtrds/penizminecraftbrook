@@ -1,0 +1,50 @@
+-- Função para criar a estrutura e anexá-la ao personagem
+function createAndAttachStructure()
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local rootPart = character:WaitForChild("HumanoidRootPart")
+
+    -- Criar o modelo para a estrutura
+    local model = Instance.new("Model")
+    model.Name = "TransformStructure"
+    model.Parent = character
+
+    -- Função para criar partes e anexá-las ao modelo
+    local function createPart(size, position, color)
+        local part = Instance.new("Part")
+        part.Size = size
+        part.Position = position
+        part.Anchored = false
+        part.CanCollide = false
+        part.BrickColor = BrickColor.new(color)
+        part.Parent = model
+
+        local weld = Instance.new("Weld")
+        weld.Part0 = rootPart
+        weld.Part1 = part
+        weld.C0 = rootPart.CFrame:inverse() * part.CFrame
+        weld.Parent = part
+
+        return part
+    end
+
+    local basePosition = rootPart.Position
+
+    -- Bloco de base
+    createPart(Vector3.new(4, 4, 4), basePosition + Vector3.new(-2, 0, 0), "Brown")
+    createPart(Vector3.new(4, 4, 4), basePosition, "Brown")
+    createPart(Vector3.new(4, 4, 4), basePosition + Vector3.new(2, 0, 0), "Brown")
+
+    -- Corpo da estrutura (2 blocos de altura)
+    createPart(Vector3.new(4, 4, 4), basePosition + Vector3.new(0, 4, 0), "Brown")
+    createPart(Vector3.new(4, 4, 4), basePosition + Vector3.new(0, 8, 0), "Brown")
+
+    -- Bloco superior rosa
+    createPart(Vector3.new(4, 4, 4), basePosition + Vector3.new(0, 12, 0), "Hot pink")
+
+    -- Reposicionar o personagem dentro da estrutura
+    character.HumanoidRootPart.CFrame = CFrame.new(basePosition + Vector3.new(0, 6, 0))
+end
+
+-- Chamar a função para criar e anexar a estrutura
+createAndAttachStructure()
